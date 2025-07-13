@@ -1,4 +1,3 @@
-import WelcomeMessage from './components/WelcomeMessage';
 function WelcomeMessage() {
     return (
         <div>
