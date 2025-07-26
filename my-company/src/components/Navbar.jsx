@@ -1,9 +1,30 @@
-function Footer() {
+import { Link } from 'react-router-dom';
+
+function Navbar() {
+  const navStyle = {
+    backgroundColor: '#333',
+    color: 'white',
+    padding: '10px',
+    display: 'flex',
+    gap: '15px',
+    justifyContent: 'center',
+  };
+
+  const linkStyle = {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  };
+
   return (
-    <footer style={{ textAlign: 'center', padding: '15px', backgroundColor: '#eee', marginTop: '30px' }}>
-      <p>&copy; 2025 My Company. All rights reserved.</p>
-    </footer>
+    <nav style={navStyle}>
+      <Link to="/" style={linkStyle}>Home</Link>
+      <Link to="/About" style={linkStyle}>About</Link>
+      <Link to="/services" style={linkStyle}>Services</Link>
+      <Link to="/contact" style={linkStyle}>Contact</Link>
+    </nav>
   );
 }
 
-export default Footer;
+export default Navbar;
+
