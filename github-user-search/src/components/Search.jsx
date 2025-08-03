@@ -1,51 +1,54 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import fetchUserData from '../services/githubService';
 
 function Search() {
-  const [query, setQuery] = useState('');
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
+    setUser(null);
 
-  const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://api.github.com/search/users?q=${query}`);
-      setUsers(response.data.items);
-      if (response.data.items.length === 0) {
-        setError("Looks like we can't find the user");
-      } else {
-        setError('');
-      }
+      const data = await fetchUserData(username);
+      setUser(data);
     } catch (err) {
-      setError('An error occurred while fetching users');
-      setUsers([]);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search GitHub user"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div style={{ textAlign: 'center', padding: '2rem' }}>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter GitHub username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          style={{ padding: '8px', width: '250px', marginRight: '8px' }}
+        />
+        <button type="submit" style={{ padding: '8px 16px' }}>Search</button>
+      </form>
 
-      {error && <p>{error}</p>}
-
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            <a href={user.html_url} target="_blank" rel="noopener noreferrer">
-              {user.login}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>Looks like we can't find the user</p>}
+      {user && (
+        <div style={{ marginTop: '2rem' }}>
+          <img src={user.avatar_url} alt="avatar" width="100" style={{ borderRadius: '50%' }} />
+          <h3>{user.name || user.login}</h3>
+          <a href={user.html_url} target="_blank" rel="noreferrer">
+            View GitHub Profile
+          </a>
+        </div>
+      )}
     </div>
   );
 }
 
 export default Search;
-
-
