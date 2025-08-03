@@ -1,10 +1,10 @@
 import React from 'react';
+import Search from './components/Search';
 
 function App() {
   return (
     <div>
-      <h1>GitHub User Search App</h1>
-      {/* Search component will be added here later */}
+      <Search />
     </div>
   );
 }
