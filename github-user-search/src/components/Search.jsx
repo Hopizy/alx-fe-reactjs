@@ -1,52 +1,56 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { fetchUserData } from '../services/githubService';
 
-function Search() {
-  const [query, setQuery] = useState('');
-  const [users, setUsers] = useState([]);
+const Search = () => {
+  const [username, setUsername] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSearch = async () => {
-    if (!query) return;
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setUser(null);
+
     try {
-      const response = await axios.get(`https://api.github.com/search/users?q=${query}`);
-      setUsers(response.data.items);
-      if (response.data.items.length === 0) {
-        setError("Looks like we can't find the user");
-      } else {
-        setError('');
-      }
+      const data = await fetchUserData(username);
+      setUser(data);
     } catch (err) {
-      setError('Failed to fetch data');
-      setUsers([]);
+      setError('Looks like we cant find the user');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2>GitHub User Search</h2>
-      <input
-        type="text"
-        value={query}
-        placeholder="Enter GitHub username"
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter GitHub username"
+          style={{ padding: '0.5rem', width: '250px' }}
+        />
+        <button type="submit" style={{ padding: '0.5rem 1rem', marginLeft: '1rem' }}>
+          Search
+        </button>
+      </form>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <ul>
-        {users.map(user => (
-          <li key={user.id}>
-            <img src={user.avatar_url} alt={user.login} width={40} />
-            <a href={user.html_url} target="_blank" rel="noreferrer">
-              {user.login}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {user && (
+        <div style={{ marginTop: '2rem' }}>
+          <img src={user.avatar_url} alt={user.login} width={100} style={{ borderRadius: '50%' }} />
+          <h2>{user.name || user.login}</h2>
+          <a href={user.html_url} target="_blank" rel="noopener noreferrer">
+            Visit Profile
+          </a>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Search;
