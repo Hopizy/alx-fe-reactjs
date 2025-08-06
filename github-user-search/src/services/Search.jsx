@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { fetchUsersByQuery } from '../services/githubService';
+import { searchGitHubUsers } from '../services/githubService';
 
 const Search = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ const Search = () => {
     setUsers([]);
 
     try {
-      const data = await fetchUsersByQuery(formData);
+      const data = await searchGitHubUsers(formData);
       setUsers(data.items);
     } catch (err) {
       setError('Looks like we can’t find any users with those criteria.');
@@ -32,10 +32,10 @@ const Search = () => {
   };
 
   return (
+    <div className="bg-green-200 text-center p-10 text-xl font-bold">
     <div className="max-w-2xl mx-auto p-4">
       <form onSubmit={handleSubmit} className="space-y-4 bg-white shadow p-6 rounded-lg">
-        <h2 className="text-xl font-semibold text-center">Advanced GitHub User Search</h2>
-
+        <h2 className="text-x1 font-semibold text-center">Advanced GitHub User Search</h2>
         <input
           name="username"
           type="text"
@@ -89,7 +89,8 @@ const Search = () => {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+      </div>
   );
 };
 
