@@ -1,28 +1,32 @@
-import React from "react";
-import { Link } from "react-router-dom";
+// src/pages/HomePage.jsx
+import AddRecipeForm from "../components/AddRecipeForm";
+import { useState } from "react";
 
-const HomePage = ({ recipes }) => {
+export default function HomePage() {
+  const [recipes, setRecipes] = useState([]);
+
+  const handleAddRecipe = (recipe) => {
+    setRecipes([...recipes, recipe]);
+  };
+
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {recipes.map((recipe) => (
-        <div
-          key={recipe.id}
-          className="bg-white shadow-md rounded-2xl p-4 hover:shadow-lg transition"
-        >
-          <h2 className="text-xl font-bold mb-2">{recipe.title}</h2>
-          <p className="text-gray-600">{recipe.description}</p>
+    <div className="p-6">
+      <AddRecipeForm onAddRecipe={handleAddRecipe} />
 
-          {/* Use Link to navigate to RecipeDetail */}
-          <Link
-            to={`/recipe/${recipe.id}`}
-            className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            View Details
-          </Link>
-        </div>
-      ))}
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-4">Recipes</h3>
+        <ul className="space-y-2">
+          {recipes.map((recipe) => (
+            <li key={recipe.id} className="p-4 border rounded-lg">
+              <h4 className="font-bold">{recipe.title}</h4>
+              <p className="text-sm text-gray-600">
+                Ingredients: {recipe.ingredients.join(", ")}
+              </p>
+              <p className="text-sm mt-1">{recipe.steps}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
-};
-
-export default HomePage;
+}
