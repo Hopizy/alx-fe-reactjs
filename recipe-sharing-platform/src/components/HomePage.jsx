@@ -5,7 +5,7 @@ const HomePage = () => {
 
   useEffect(() => {
     // Fetch mock data from data.json
-    fetch("src\data.json")
+    fetch("./data.json")
       .then((response) => response.json())
       .then((data) => setRecipes(data))
       .catch((error) => console.error("Error loading recipes:", error));
@@ -16,7 +16,7 @@ const HomePage = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">🍽️ Recipe Sharing Platform</h1>
 
       {/* Responsive Grid */}
-      <div className="grid gap-6 sm:grid-cols-1 grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-1grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
           <div
             key={recipe.id}
