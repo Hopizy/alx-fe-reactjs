@@ -7,12 +7,20 @@ const fetchPosts = async () => {
 };
 
 function PostsComponent() {
-  // useQuery automatically caches and manages state
-  const { data, error, isLoading, isError, refetch } = useQuery({
-    queryKey: ['posts'], // cache key
+  const {
+    data,
+    error,
+    isLoading,
+    isError,
+    refetch,
+    isFetching, // shows background refetching
+  } = useQuery({
+    queryKey: ['posts'],
     queryFn: fetchPosts,
-    staleTime: 5000, // 5s before refetch considered
-    cacheTime: 1000 * 60 * 5, // 5 minutes in cache
+    staleTime: 5000,        // Data considered "fresh" for 5s
+    cacheTime: 1000 * 60,   // Cache persists for 1 min
+    refetchOnWindowFocus: true, // 👈 auto refetch when tab regains focus
+    keepPreviousData: true,     // 👈 keep old data while fetching new one
   });
 
   if (isLoading) return <p>Loading posts...</p>;
@@ -20,12 +28,14 @@ function PostsComponent() {
 
   return (
     <div>
-      <button 
-        onClick={() => refetch()} 
+      <button
+        onClick={() => refetch()}
         className="px-4 py-2 mb-4 bg-blue-500 text-white rounded"
       >
         Refetch Posts
       </button>
+
+      {isFetching && <p className="text-sm text-gray-500">Updating in background…</p>}
 
       <ul className="space-y-2">
         {data.slice(0, 10).map((post) => (
