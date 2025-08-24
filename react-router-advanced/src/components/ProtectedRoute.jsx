@@ -1,13 +1,21 @@
-import { Navigate } from "react-router-dom";
+import { createContext, useContext, useState } from "react";
 
-// Simulated authentication
-const isAuthenticated = false; // change to true to allow access
+const AuthContext = createContext();
 
-function ProtectedRoute({ children }) {
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
+export function AuthProvider({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const login = () => setIsAuthenticated(true);
+  const logout = () => setIsAuthenticated(false);
+
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-export default ProtectedRoute;
+// 👇 Custom hook
+export function useAuth() {
+  return useContext(AuthContext);
+}
